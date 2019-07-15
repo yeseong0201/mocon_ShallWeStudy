@@ -3,25 +3,25 @@
     package="com.example.first_app">
 
 
-    <!--<uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />-->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
 
     <application
         android:icon="@drawable/ic_launcher_foreground"
-        android:label="first_app">
-        <activity
-            android:name=".AlwaysOnTopActivity"
-            android:label="first_app">
+        android:label="first_app"
+        android:theme="@style/AppTheme">
+
+        <activity android:name=".LockActivity" />
+        <activity android:name=".AlwaysOnTopActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <service
             android:name=".AlwaysOnTopService"
-            android:enabled="true"
-            android:permission="android.permission.SYSTEM_ALERT_WINDOW"> <!-- 퍼미션 중요 -->
+            android:enabled="true"> <!-- 퍼미션 중요 -->
             <intent-filter>
                 <action android:name="com.example.first_app" />
             </intent-filter>

@@ -16,6 +16,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.Serializable;
 
@@ -24,8 +25,7 @@ public class SetTimeDialog extends AppCompatActivity {
     EditText min;
     Button Ok;
     Button No;
-    String hour_s;
-    String min_s;
+
     int timeH;
     int timeM;
 
@@ -50,7 +50,7 @@ public class SetTimeDialog extends AppCompatActivity {
         // callFunction(final TextView setTime);
     }
 
-    public void callFunction(final TextView setTime) {
+    public void callFunction(final TextView setTimeH, final TextView setTimeM) {
         final Dialog dig = new Dialog(context);
 
         dig.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -66,23 +66,17 @@ public class SetTimeDialog extends AppCompatActivity {
         Ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent intent = new Intent(SetTimeDialog.this, AlwaysOnTopActivity.class);
-//
-//
-                hour_s = hour.getText().toString();
-                min_s = min.getText().toString();
 
-                timeH = Integer.parseInt(hour_s);
-                timeM = Integer.parseInt(min_s);
+                final String hour_s = hour.getText().toString();
+                final String min_s = min.getText().toString();
 
-                setTime.setText(timeH + " 시간" + timeM + " 분");
+                if (min_s.length() != 0 || hour_s.length() != 0) {
+                    setTimeH.setText(hour_s);
+                    setTimeM.setText(min_s);
+                    dig.dismiss();
+                }
+                else Toast.makeText(context, "시간을 설정해주세요.", Toast.LENGTH_SHORT).show();
 
-
-                //  intent.putExtra("hour", timeH);
-                //  intent.putExtra("minnute", timeM);
-//                startActivity(intent);
-
-                dig.dismiss();
             }
         });
 

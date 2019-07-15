@@ -1,1 +1,1 @@
-include ':app', ':applock', ':app_lock2', ':first_app', ':alwaysontopviewtest'
+include ':app', ':applock', ':app_lock2', ':first_app', ':alwaysontopviewtest', ':mapppermission'

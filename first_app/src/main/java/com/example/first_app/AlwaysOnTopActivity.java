@@ -23,31 +23,37 @@ import static android.os.Build.VERSION_CODES.M;
 import static android.os.Build.VERSION_CODES.O;
 
 public class AlwaysOnTopActivity extends Activity {
-    // public static int ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE = 5469;
     private static final int ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE = 1;
+    private static final int REQ_CODE_OVERLAY_PERMISSION = 1;
+
 
     private SetTimeDialog dialog;
 
+    TextView setTimeH;
+    TextView setTimeM;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        final TextView setTime = findViewById(R.id.setTime);
 
 
+        Intent intent = new Intent(getApplicationContext(), AlwaysOnTopService.class);
+        setTimeH = findViewById(R.id.setTimeH);
+        setTimeM = findViewById(R.id.setTimeM);
         Button start = findViewById(R.id.start);
         Button end = findViewById(R.id.end);
-        Button start_lock = findViewById(R.id.start_lock);
+        final Button start_lock = findViewById(R.id.start_lock);
 
 
         start.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-               // Dialog();
+                // Dialog();
                 SetTimeDialog dialog = new SetTimeDialog(AlwaysOnTopActivity.this);
-                dialog.callFunction(setTime);
+                dialog.callFunction(setTimeH, setTimeM);
+                start_lock.setVisibility(View.VISIBLE);
 
             }
         });
@@ -55,7 +61,13 @@ public class AlwaysOnTopActivity extends Activity {
         start_lock.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                checkPermission();
+                    openView();
+
+                // checkPermission();
+//                Intent intent = new Intent(AlwaysOnTopActivity.this, LockActivity.class);
+//                intent.putExtra("Hour", setTimeH.getText().toString());
+//                intent.putExtra("Minute", setTimeM.getText().toString());
+//                startActivity(intent);
 
             }
         });
@@ -63,7 +75,8 @@ public class AlwaysOnTopActivity extends Activity {
         end.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                stopService(new Intent(AlwaysOnTopActivity.this, AlwaysOnTopService.class));
+                closeView();
+                // stopService(new Intent(AlwaysOnTopActivity.this, AlwaysOnTopService.class));
             }
         });
 
@@ -82,6 +95,29 @@ public class AlwaysOnTopActivity extends Activity {
 //
 //    }
 
+    public void openView() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (Settings.canDrawOverlays(this)) {
+                Intent intent = new Intent(AlwaysOnTopActivity.this, AlwaysOnTopService.class);
+                intent.putExtra("Hour", setTimeH.getText().toString());
+                intent.putExtra("Minute", setTimeM.getText().toString());
+                startService(intent);
+            }
+
+
+            else
+                onObtainingPermissionOverlayWindow();
+        }
+    }
+
+    public void closeView() {
+        stopService(new Intent(this, AlwaysOnTopService.class));
+    }
+
+    public void onObtainingPermissionOverlayWindow() {
+        Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
+        startActivityForResult(intent, REQ_CODE_OVERLAY_PERMISSION);
+    }
 
     public void checkPermission() { // o
         if (Build.VERSION.SDK_INT >= M) {   // 마시멜로우 이상일 경우
